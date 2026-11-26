@@ -11,10 +11,10 @@ import ChatHistory from "../components/ChatHistory";
 
 export default function Home() {
 
-    const { message, notification, userInfo, setNotification, 
+    const { message, notification, userInfo, setNotification,
         setUserInfo, setMessage, title, setTitle, chatHistory, setChatHistory, setChatId } = useMessage();
-    
-    
+
+
 
     const [isAuthFormOpen, setIsAuthFormOpen] = useState<boolean>(false);
     const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
@@ -35,9 +35,16 @@ export default function Home() {
         }
     }
 
+    // useEffect(() => {
+    //     if (sessionStorage.getItem("conversation")) {
+    //         setMessage(JSON.parse(sessionStorage.getItem("conversation")));
+    //     }
+    // }, []);
     useEffect(() => {
-        if (sessionStorage.getItem("conversation")) {
-            setMessage(JSON.parse(sessionStorage.getItem("conversation")));
+        const conversation = sessionStorage.getItem("conversation");
+
+        if (conversation) {
+            setMessage(JSON.parse(conversation));
         }
     }, []);
 
@@ -77,7 +84,8 @@ export default function Home() {
 
 
     // Scroll the chat screen at bottom
-    const bottomRef = useRef(null);
+    // const bottomRef = useRef(null);
+    const bottomRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
 
@@ -111,7 +119,7 @@ export default function Home() {
                             chatHistory.map((history, idx) => {
                                 return (
                                     <ChatHistory key={idx} history={history} setChatHistory={setChatHistory}
-                                    idx={idx} isSideBarOpen={isSideBarOpen} setIsSideBarOpen={setIsSideBarOpen} />
+                                        idx={idx} isSideBarOpen={isSideBarOpen} setIsSideBarOpen={setIsSideBarOpen} />
                                 )
                             })
                         }
@@ -145,12 +153,15 @@ export default function Home() {
                     }
 
                     <h3>
-                        {
-                            title === null ?
-                                sessionStorage.getItem("title") ? JSON.parse(sessionStorage.getItem("title")) : null :
-                                title
-                        }
+                        {title ?? (() => {
+                            const storedTitle = sessionStorage.getItem("title");
+
+                            return storedTitle
+                                ? JSON.parse(storedTitle)
+                                : null;
+                        })()}
                     </h3>
+
                     {userInfo ? (
                         <button className="logout-btn" onClick={logout}>Logout</button>
                     ) : (
