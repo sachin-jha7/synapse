@@ -128,8 +128,8 @@ export const chatController = async (req: Request, res: Response): Promise<void>
 
                 let counter = estimateTokens(JSON.stringify(input));
                 counter += estimateTokens(contextInstructions);
-                if (counter > 5500) {
-                    const lastFewMessages = input.splice(-7);
+                if (counter > 4000) {
+                    const lastFewMessages = input.splice(-3);
                     summary = await summarizer(input);
                     const response = await client.responses.create({
                         model: "openai/gpt-oss-20b",
@@ -193,7 +193,7 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                         parallel_tool_calls: false,
                         input: prompt,
                     });
-                    console.log(response);
+                    // console.log(response);
                     const title = JSON.parse(response.output_text).title;
                     const newThread = await Thread.create({
                         title,
@@ -252,10 +252,10 @@ export const chatController = async (req: Request, res: Response): Promise<void>
 
                     let counter = estimateTokens(JSON.stringify(input));
                     counter += estimateTokens(contextInstructions);
-                    console.log(counter)
-                    if (counter > 5500) {
-                        console.log(counter)
-                        const lastFewMessages = input.splice(-7);
+                    // console.log(counter)
+                    if (counter > 4000) {
+                        // console.log(counter)
+                        const lastFewMessages = input.splice(-3);
                         summary = await summarizer(input);
                         const response = await client.responses.create({
                             model: "openai/gpt-oss-20b",
@@ -398,7 +398,7 @@ export const chatController = async (req: Request, res: Response): Promise<void>
         // console.error("Error status:", error.status);
         // console.error("Error details:", error.error);
         // console.error("Full error:", error);
-        res.status(500).json({ content: "Interval server error, Try after some time! May be You have crossed the token limit" });
+        res.status(500).json({ content: "Internal server error, Try after some time! or May be You have crossed the token limit" });
     }
 }
 
