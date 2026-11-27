@@ -1,4 +1,4 @@
-import { faBarsStaggered, faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faBarsStaggered, faPenToSquare, faXmark, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useMessage } from "../context/MessageContext";
 import BotMessage from "../components/BotMessage";
@@ -18,6 +18,8 @@ export default function Home() {
 
     const [isAuthFormOpen, setIsAuthFormOpen] = useState<boolean>(false);
     const [isSideBarOpen, setIsSideBarOpen] = useState<boolean>(false);
+
+    const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
 
     const logout = async () => {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/logout`, {
@@ -67,6 +69,7 @@ export default function Home() {
                 credentials: "include",
             });
             const data = await res.json();
+            setIsAppLoading(false);
             if (data.message === "Unauthorized") {
                 setUserInfo(null);
             }
@@ -98,122 +101,137 @@ export default function Home() {
     }, [message]);
 
     return (
-        <div className="main">
-            <div style={window.innerWidth <= 800 ? isSideBarOpen ? { left: "0" } : { left: "-100%" } : { position: "relative" }} className="left-section">
-                <div className="brand">
-                    <p className="logo">Synapse</p>
-                    {window.innerWidth <= 800 ? (
-                        <button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
-                            <FontAwesomeIcon icon={faXmark} />
-                        </button>
-                    ) : null}
-                </div>
-                <div onClick={openNewChat} className="new-chat-btn">
-                    <FontAwesomeIcon icon={faPenToSquare} /> New chat
-                </div>
-                <div className="chat-history">
-                    <h3 >recents</h3>
-                    <div className="history-collection">
 
-                        {
-                            chatHistory.map((history, idx) => {
-                                return (
-                                    <ChatHistory key={idx} history={history} setChatHistory={setChatHistory}
-                                        idx={idx} isSideBarOpen={isSideBarOpen} setIsSideBarOpen={setIsSideBarOpen} />
-                                )
-                            })
-                        }
+        isAppLoading ? (
+            <h2 style={{
+                position: "fixed", top: "50%", left: "50%",
+                transform: "translate(-50%, -50%)", border: "1px solid rgba(255, 255, 255, 0.08)",
+                padding: "10px", background: "rgba(255, 255, 255, 0.08)"
+            }}
+            >App Loading <FontAwesomeIcon
+                    className="force-spin"
+                    icon={faCircleNotch}
+                /></h2>
+        ) : (
+            <div className="main">
+                <div style={window.innerWidth <= 800 ? isSideBarOpen ? { left: "0" } : { left: "-100%" } : { position: "relative" }} className="left-section">
+                    <div className="brand">
+                        <p className="logo">Synapse</p>
+                        {window.innerWidth <= 800 ? (
+                            <button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
+                                <FontAwesomeIcon icon={faXmark} />
+                            </button>
+                        ) : null}
+                    </div>
+                    <div onClick={openNewChat} className="new-chat-btn">
+                        <FontAwesomeIcon icon={faPenToSquare} /> New chat
+                    </div>
+                    <div className="chat-history">
+                        <h3 >recents</h3>
+                        <div className="history-collection">
 
-                        {/* <div className="recent-chat">
+                            {
+                                chatHistory.map((history, idx) => {
+                                    return (
+                                        <ChatHistory key={idx} history={history} setChatHistory={setChatHistory}
+                                            idx={idx} isSideBarOpen={isSideBarOpen} setIsSideBarOpen={setIsSideBarOpen} />
+                                    )
+                                })
+                            }
+
+                            {/* <div className="recent-chat">
                             <p className="text">Dashboard UI/UX improvment...</p>
                             <button className="history-del-btn">
                                 <FontAwesomeIcon icon={faTrashCan} />
                             </button>
                         </div> */}
+                        </div>
+                    </div>
+                    <div className="profile">
+                        <div className="img">
+                            {/* <img src="https://i.pinimg.com/474x/69/d4/54/69d454b78c426f54b8ab301a95e38be8.jpg" alt="" /> */}
+                            {userInfo ? <p >{userInfo.letters}</p> : <p>?</p>}
+                        </div>
+                        <p className="username">
+                            {userInfo ? userInfo.userName : ":)"}
+                        </p>
                     </div>
                 </div>
-                <div className="profile">
-                    <div className="img">
-                        {/* <img src="https://i.pinimg.com/474x/69/d4/54/69d454b78c426f54b8ab301a95e38be8.jpg" alt="" /> */}
-                        {userInfo ? <p >{userInfo.letters}</p> : <p>?</p>}
-                    </div>
-                    <p className="username">
-                        {userInfo ? userInfo.userName : ":)"}
-                    </p>
-                </div>
-            </div>
-            <div className="right-section">
-                <div className="top-nav">
-                    {
-                        window.innerWidth <= 800 ? (
-                            <button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
-                                <FontAwesomeIcon icon={faBarsStaggered} />
-                            </button>
-                        ) : null
-                    }
+                <div className="right-section">
+                    <div className="top-nav">
+                        {
+                            window.innerWidth <= 800 ? (
+                                <button onClick={() => setIsSideBarOpen(!isSideBarOpen)}>
+                                    <FontAwesomeIcon icon={faBarsStaggered} />
+                                </button>
+                            ) : null
+                        }
 
-                    <h3>
-                        {title ?? (() => {
-                            const storedTitle = sessionStorage.getItem("title");
+                        <h3>
+                            {title ?? (() => {
+                                const storedTitle = sessionStorage.getItem("title");
 
-                            return storedTitle
-                                ? JSON.parse(storedTitle)
-                                : null;
-                        })()}
-                        {/* {
+                                return storedTitle
+                                    ? JSON.parse(storedTitle)
+                                    : null;
+                            })()}
+                            {/* {
                             title ? title : JSON.parse(sessionStorage.getItem("title"))
                         } */}
-                    </h3>
+                        </h3>
 
-                    {userInfo ? (
-                        <button className="logout-btn" onClick={logout}>Logout</button>
-                    ) : (
-                        <button onClick={() => setIsAuthFormOpen(!isAuthFormOpen)}>Login</button>
-                    )}
+                        {userInfo ? (
+                            <button className="logout-btn" onClick={logout}>Logout</button>
+                        ) : (
+                            <button onClick={() => setIsAuthFormOpen(!isAuthFormOpen)}>Login</button>
+                        )}
 
-                </div>
-                <div className="chat-box">
-                    {message.length == 0 && <h1 className="start-header">What should we explore?</h1>}
-                    <div className="msg-box">
-                        {
-                            message.map((data, idx, arr) => {
-                                return (
-                                    data.sendBy === "user" ? (
-                                        idx === arr.length - 1 ? <div key={idx} className="user-msg-wrapper">
-                                            <div className="right-msg-glow animated-glow">
-                                                <div className="right-msg">{data.msg}</div>
-                                            </div>
-                                        </div>
-                                            : <div key={idx} className="user-msg-wrapper">
-                                                <div className="right-msg-glow">
+                    </div>
+                    <div className="chat-box">
+                        {message.length == 0 && <h1 className="start-header">What should we explore?</h1>}
+                        <div className="msg-box">
+                            {
+                                message.map((data, idx, arr) => {
+                                    return (
+                                        data.sendBy === "user" ? (
+                                            idx === arr.length - 1 ? <div key={idx} className="user-msg-wrapper">
+                                                <div className="right-msg-glow animated-glow">
                                                     <div className="right-msg">{data.msg}</div>
                                                 </div>
                                             </div>
-                                    ) : (
-                                        <BotMessage key={idx} msg={data.msg} idx={idx} />
+                                                : <div key={idx} className="user-msg-wrapper">
+                                                    <div className="right-msg-glow">
+                                                        <div className="right-msg">{data.msg}</div>
+                                                    </div>
+                                                </div>
+                                        ) : (
+                                            <BotMessage key={idx} msg={data.msg} idx={idx} />
+                                        )
                                     )
-                                )
-                            })
+                                })
+                            }
+                            <div ref={bottomRef} />
+                        </div>
+
+                        {
+                            <InputBox />
                         }
-                        <div ref={bottomRef} />
+
+
                     </div>
-
-                    {
-                        <InputBox />
-                    }
-
-
+                    <div className="footer">
+                        <p>
+                            Synapse. v0 &copy; 2026 <a href="https://sachin-ten-ruby.vercel.app/">Sachin</a>
+                        </p>
+                    </div>
                 </div>
-                <div className="footer">
-                    <p>
-                        Synapse. v0 &copy; 2026 <a href="https://sachin-ten-ruby.vercel.app/">Sachin</a>
-                    </p>
-                </div>
+                {
+                    isAuthFormOpen && <AuthForm setIsAuthFormOpen={setIsAuthFormOpen} />
+                }
+                {notification && <Notification />}
             </div>
-            {
-                isAuthFormOpen && <AuthForm setIsAuthFormOpen={setIsAuthFormOpen} />
-            }
-            {notification && <Notification />}
-        </div>
+        )
+
+
     )
 }
