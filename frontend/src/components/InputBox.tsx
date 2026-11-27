@@ -319,8 +319,8 @@ export default function InputBox() {
             style={
                 message.length > 0
                     ? window.innerWidth <= 600
-                        ? { top: "81.99%", position: "fixed" }
-                        : { top: "80%", position: "fixed" }
+                        ? { top: "81.99%" }
+                        : { top: "80%" }
                     : { top: "60%" }
             }
             onSubmit={handleSubmit}
