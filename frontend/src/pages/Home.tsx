@@ -153,13 +153,16 @@ export default function Home() {
                     }
 
                     <h3>
-                        {title ?? (() => {
+                        {/* {title ?? (() => {
                             const storedTitle = sessionStorage.getItem("title");
 
                             return storedTitle
                                 ? JSON.parse(storedTitle)
                                 : null;
-                        })()}
+                        })()} */}
+                        {
+                            title ? title : JSON.parse(sessionStorage.getItem("title"))
+                        }
                     </h3>
 
                     {userInfo ? (
