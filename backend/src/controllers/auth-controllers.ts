@@ -16,17 +16,17 @@ type cookieOptions = {
     httpOnly: boolean;
     secure: boolean;
     sameSite: "strict" | "lax" | "none";
-    maxAge: number;
-    // partitioned: boolean;
-    // path: string;
+    partitioned: boolean;
+    path: string;
+    maxAge: number;    
 }
 const options: cookieOptions = {
     httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    // partitioned: true,
-    // path: "/"
+    secure: true,
+    sameSite: "none",
+    partitioned: true,
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000
 }
 
 export const login = async (req: Request<{}, any, IUser>, res: Response): Promise<void> => {
