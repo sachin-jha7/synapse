@@ -63,6 +63,7 @@ export const deleteChat = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "No Message exists!" });
         }
         const deletedMessages = await Message.deleteMany({belongsTo: threadId});
+        await Summary.deleteMany({ belongsTo: threadId });
         const deletedThread = await Thread.deleteOne({_id: threadId});
         // console.log(deletedMessages);
         // console.log(deletedThread);
