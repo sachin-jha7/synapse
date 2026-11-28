@@ -106,7 +106,7 @@ export default function Home() {
             <h2 style={{
                 position: "fixed", top: "50%", left: "50%",
                 transform: "translate(-50%, -50%)", border: "1px solid rgba(255, 255, 255, 0.08)",
-                padding: "10px", background: "rgba(255, 255, 255, 0.08)"
+                padding: "10px", background: "rgba(255, 255, 255, 0.08)", whiteSpace: "nowrap"
             }}
             >App Loading <FontAwesomeIcon
                     className="force-spin"
