@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { Thread } from "../models/thread.js";
 import { Message } from "../models/message.js";
 import type { Types } from "mongoose";
+import { Summary } from "../models/summary.js";
 
 export const saveUserHistory = async (req: Request, res: Response) => {
     // get the userId, get the title, get the messages and save them
