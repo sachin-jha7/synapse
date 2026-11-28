@@ -318,9 +318,9 @@ export default function InputBox() {
         <form
             style={
                 message.length > 0
-                    ? window.innerWidth <= 600
-                        ? { top: "81.99%" }
-                        : { top: "80%" }
+                    ? window.innerWidth <= 450
+                        ? { top: "86%" }
+                        : { top: "84.459%" }
                     : { top: "60%" }
             }
             onSubmit={handleSubmit}
