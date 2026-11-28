@@ -14,6 +14,14 @@ interface BotMessageProps {
 }
 
 export default function BotMessage({ msg, idx }: BotMessageProps) {
+    const formatMath = (text: string) => {
+        if (!text) return "";
+        return text
+            .replace(/(?<!\\)\\\[/g, () => "\n$$\n")
+            .replace(/(?<!\\)\\\]/g, () => "\n$$\n")
+            .replace(/(?<!\\)\\\(/g, () => "$")
+            .replace(/(?<!\\)\\\)/g, () => "$");
+    };
     return (
         <div key={idx} className="left-msg">
             <Markdown
@@ -39,7 +47,7 @@ export default function BotMessage({ msg, idx }: BotMessageProps) {
                     }
                 }}
             >
-                {msg}
+                {formatMath(msg)}
             </Markdown>
         </div>
     );
