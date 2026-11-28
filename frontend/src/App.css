@@ -82,6 +82,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
+  overflow-y: auto;
+  height: 395px;
 }
 
 .chat-history .recent-chat {
@@ -557,11 +559,27 @@ body {
   white-space: nowrap;
 }
 
-.msg-box .left-msg * {
+/* .msg-box .left-msg * {
   overflow-x: auto;
   overflow-wrap: break-word;
   
+} */
+
+.msg-box .left-msg {
+  overflow-wrap: break-word;
 }
+
+.msg-box .left-msg pre,
+.msg-box .left-msg .katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.msg-box .left-msg .katex * {
+  overflow: visible !important;
+}
+
 
 
 
