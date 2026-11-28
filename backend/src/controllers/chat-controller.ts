@@ -72,34 +72,22 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                     model: "openai/gpt-oss-20b",
                     instructions: `${systemPrompt}
                     Generate a short, meaningful title for this conversation based on the user's first message.
-                    Keep the title around 3-8 words.
-                    The answer must follow standard Markdown formatting.`,
-                    text: {
-                        format: {
-                            type: "json_schema",
-                            name: "chat_response",
-                            strict: true,
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    title: {
-                                        type: "string"
-                                    },
-                                    answer: {
-                                        type: "string"
-                                    }
-                                },
-                                required: ["title", "answer"],
-                                additionalProperties: false
-                            }
-                        }
-                    },
+                    Keep the title around 3-8 words (Return only the title).`,
                     tool_choice: "auto",
                     parallel_tool_calls: false,
                     input: prompt,
                 });
                 // console.log(JSON.parse(response.output_text).title);
-                res.status(200).json({ content: JSON.parse(response.output_text).answer, title: JSON.parse(response.output_text).title });
+               const title = response.output_text;
+                const result = await client.responses.create({
+                    model: "openai/gpt-oss-20b",
+                    instructions: systemPrompt,
+                    tool_choice: "auto",
+                    parallel_tool_calls: false,
+                    input: prompt,
+                })
+                // console.log(JSON.parse(response.output_text).title);
+                res.status(200).json({ content: result.output_text, title: title });
             } else {
                 // Only generate the output
 
@@ -167,34 +155,20 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                         model: "openai/gpt-oss-20b",
                         instructions: `${systemPrompt}
                     Generate a short, meaningful title for this conversation based on the user's first message.
-                    Keep the title around 3-8 words.
-                    The answer must follow standard Markdown formatting.`,
-                        text: {
-                            format: {
-                                type: "json_schema",
-                                name: "chat_response",
-                                strict: true,
-                                schema: {
-                                    type: "object",
-                                    properties: {
-                                        title: {
-                                            type: "string"
-                                        },
-                                        answer: {
-                                            type: "string"
-                                        }
-                                    },
-                                    required: ["title", "answer"],
-                                    additionalProperties: false
-                                }
-                            }
-                        },
+                    Keep the title around 3-8 words (Return only the title).`,
                         tool_choice: "auto",
                         parallel_tool_calls: false,
                         input: prompt,
                     });
                     // console.log(response);
-                    const title = JSON.parse(response.output_text).title;
+                    const title = response.output_text;
+                    const result = await client.responses.create({
+                    model: "openai/gpt-oss-20b",
+                    instructions: systemPrompt,
+                    tool_choice: "auto",
+                    parallel_tool_calls: false,
+                    input: prompt,
+                    });
                     const newThread = await Thread.create({
                         title,
                         owner: userId
@@ -207,12 +181,12 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                         belongsTo: newThread._id
                     });
                     const newResponseMsg = await Message.create({
-                        msg: JSON.parse(response.output_text).answer,
+                        msg: result.output_text,
                         sendBy: "system",
                         belongsTo: newThread._id
                     });
 
-                    res.status(200).json({ content: JSON.parse(response.output_text).answer, title: title, threadId: newThread._id });
+                    res.status(200).json({ content: result.output_text, title: title, threadId: newThread._id });
                     return;
                 } else {
                     // clicked on existing chat or new user is in it's first chat
@@ -344,33 +318,19 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                     model: "openai/gpt-oss-20b",
                     instructions: `${systemPrompt}
                     Generate a short, meaningful title for this conversation based on the user's first message.
-                    Keep the title around 3-8 words.
-                    The answer must follow standard Markdown formatting.`,
-                    text: {
-                        format: {
-                            type: "json_schema",
-                            name: "chat_response",
-                            strict: true,
-                            schema: {
-                                type: "object",
-                                properties: {
-                                    title: {
-                                        type: "string"
-                                    },
-                                    answer: {
-                                        type: "string"
-                                    }
-                                },
-                                required: ["title", "answer"],
-                                additionalProperties: false
-                            }
-                        }
-                    },
+                    Keep the title around 3-8 words (Return only the title).`,
                     tool_choice: "auto",
                     parallel_tool_calls: false,
                     input: prompt,
                 });
-                const title = JSON.parse(response.output_text).title;
+                const title = response.output_text;
+                const result = await client.responses.create({
+                    model: "openai/gpt-oss-20b",
+                    instructions: systemPrompt,
+                    tool_choice: "auto",
+                    parallel_tool_calls: false,
+                    input: prompt,
+                });
                 const newThread = await Thread.create({
                     title,
                     owner: userId
@@ -383,11 +343,11 @@ export const chatController = async (req: Request, res: Response): Promise<void>
                     belongsTo: newThread._id
                 });
                 const newResponseMsg = await Message.create({
-                    msg: JSON.parse(response.output_text).answer,
+                    msg: result.output_text,
                     sendBy: "system",
                     belongsTo: newThread._id
                 });
-                res.status(200).json({ content: JSON.parse(response.output_text).answer, title: title, threadId: newThread._id });
+                res.status(200).json({ content: result.output_text, title: title, threadId: newThread._id });
                 return;
             }
         }
